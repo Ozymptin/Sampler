@@ -1,0 +1,9 @@
+.vs/
+Dram_core/Debug
+Sampler/Debug
+
+!*.c
+*.atsln
+*.asm
+*.xml
+*.cproj
