@@ -1,6 +1,6 @@
 #include "sam.h"
 
-#include "states.h"
+#include "states/states.h"
 
 int main()
 {

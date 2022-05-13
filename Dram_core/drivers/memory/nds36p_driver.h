@@ -23,7 +23,7 @@ struct PINOUT {
 	uint32_t control;	
 };
 
-void nds36p_prepare(struct CMD *cmds, uint16_t count);
+void nds36p_prepare(struct CMD *cmd, uint16_t count);
 void nds36p_execute_write();
 void nds36p_execute_read();
 

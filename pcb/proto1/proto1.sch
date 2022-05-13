@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A0 46811 33110
 encoding utf-8
-Sheet 1 1
+Sheet 1 2
 Title ""
 Date ""
 Rev ""
@@ -6323,6 +6323,12 @@ F 3 "~" H 34200 10600 50  0001 C CNN
 	1    34200 10600
 	1    0    0    -1  
 $EndComp
+$Sheet
+S 32500 20000 5200 3550
+U 627E8034
+F0 "Power Supply" 50
+F1 "powersupply.sch" 50
+$EndSheet
 Wire Wire Line
 	2050 22150 3000 22150
 Wire Wire Line

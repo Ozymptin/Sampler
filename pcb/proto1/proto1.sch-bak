@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A0 46811 33110
 encoding utf-8
-Sheet 1 1
+Sheet 1 2
 Title ""
 Date ""
 Rev ""
@@ -5856,17 +5856,6 @@ Connection ~ 33450 6550
 Wire Wire Line
 	33450 6600 33450 6550
 $Comp
-L Device:D D?
-U 1 1 6208B04E
-P 34200 9300
-F 0 "D?" H 34200 9083 50  0000 C CNN
-F 1 "D" H 34200 9174 50  0000 C CNN
-F 2 "" H 34200 9300 50  0001 C CNN
-F 3 "~" H 34200 9300 50  0001 C CNN
-	1    34200 9300
-	-1   0    0    1   
-$EndComp
-$Comp
 L Device:L L?
 U 1 1 6208C524
 P 33850 9100
@@ -6091,17 +6080,6 @@ Connection ~ 33000 6050
 Wire Wire Line
 	33000 6050 33450 6050
 $Comp
-L Device:D D?
-U 1 1 64CE26FA
-P 34200 10600
-F 0 "D?" H 34200 10817 50  0000 C CNN
-F 1 "D" H 34200 10726 50  0000 C CNN
-F 2 "" H 34200 10600 50  0001 C CNN
-F 3 "~" H 34200 10600 50  0001 C CNN
-	1    34200 10600
-	1    0    0    -1  
-$EndComp
-$Comp
 L Device:L L?
 U 1 1 64CE2700
 P 33850 10850
@@ -6323,6 +6301,34 @@ Wire Wire Line
 	34550 10600 34550 10250
 Wire Wire Line
 	34550 10250 33700 10250
+$Comp
+L Device:D_Schottky D?
+U 1 1 660A409A
+P 34200 9300
+F 0 "D?" H 34200 9083 50  0000 C CNN
+F 1 "D_Schottky" H 34200 9174 50  0000 C CNN
+F 2 "" H 34200 9300 50  0001 C CNN
+F 3 "~" H 34200 9300 50  0001 C CNN
+	1    34200 9300
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:D_Schottky D?
+U 1 1 660A57E8
+P 34200 10600
+F 0 "D?" H 34200 10817 50  0000 C CNN
+F 1 "D_Schottky" H 34200 10726 50  0000 C CNN
+F 2 "" H 34200 10600 50  0001 C CNN
+F 3 "~" H 34200 10600 50  0001 C CNN
+	1    34200 10600
+	1    0    0    -1  
+$EndComp
+$Sheet
+S 32500 20000 5200 3550
+U 627E8034
+F0 "Power Supply" 50
+F1 "powersupply.sch" 50
+$EndSheet
 Wire Wire Line
 	2050 22150 3000 22150
 Wire Wire Line

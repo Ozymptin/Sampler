@@ -28,6 +28,7 @@ struct CMD {
 
 	uint8_t is_write : 1;
 	uint8_t is_read : 1;
+
 	uint16_t *data;
 	uint16_t len;
 };

@@ -8,6 +8,6 @@
 
 void nds36p_init();
 
-void nds36p_rw_buffer(uint32_t loc, uint16_t *data, int16_t len, uint8_t read);
+void nds36p_rw_buffer(uint32_t loc, uint16_t *data, int16_t len, uint8_t rw);
 
 #endif
