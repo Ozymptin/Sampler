@@ -13209,10 +13209,10 @@
       (reference "L?") (unit 1) (value "50uH") (footprint "Inductor_SMD:L_Taiyo-Yuden_NR-50xx")
     )
     (path "/00000000-0000-0000-0000-0000627e8034/44dd5672-350a-4645-a183-966b3f8b0d47"
-      (reference "L?") (unit 1) (value "L") (footprint "")
+      (reference "L?") (unit 1) (value "L") (footprint "Inductor_SMD:L_Taiyo-Yuden_NR-50xx")
     )
     (path "/00000000-0000-0000-0000-0000627e8034/e236707c-b59b-4c66-88a9-08625aa3f510"
-      (reference "L?") (unit 1) (value "L") (footprint "")
+      (reference "L?") (unit 1) (value "L") (footprint "Inductor_SMD:L_Taiyo-Yuden_NR-50xx")
     )
     (path "/00000000-0000-0000-0000-00006117e668"
       (reference "R?") (unit 1) (value "100R") (footprint "Resistor_SMD:R_0805_2012Metric")
