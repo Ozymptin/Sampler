@@ -1,8 +1,10 @@
 .vs/
-Dram_core/Debug
-Sampler/Debug
+**/Debug
+**/Debug
 
 *.atsln
 *.asm
 *.xml
 *.cproj
+
+**/proto1-backups
