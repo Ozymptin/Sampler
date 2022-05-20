@@ -4,6 +4,10 @@
 #include <stdint.h>
 
 struct CMD {
+	uint8_t 
+};
+
+struct CMD {
 	union {
 		struct {
 			uint8_t cs : 1;
