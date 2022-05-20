@@ -100,7 +100,7 @@ void nds36p_struct_create_bank_precharge_all(struct CMD *cmd)
 	*cmd = precharge_all;
 }
 
-void nds36p_struct_create_read(struct  CMD *cmd, uint8_t bank, uint16_t col, uint16_t *data, uint16_t len)
+void nds36p_struct_create_read(struct CMD *cmd, uint8_t bank, uint16_t col, uint16_t *data, uint16_t len)
 {
 	*cmd = read;
 	cmd->bank = bank;
@@ -117,7 +117,7 @@ void nds36p_struct_create_read_precharge(struct CMD *cmd, uint8_t bank, uint16_t
 	cmd->address_col = col;
 }
 
-void nds36p_struct_create_write(struct  CMD *cmd, uint8_t bank, uint16_t col, uint16_t *data, uint16_t len)
+void nds36p_struct_create_write(struct CMD *cmd, uint8_t bank, uint16_t col, uint16_t *data, uint16_t len)
 {
 	*cmd = write;
 	cmd->bank = bank;

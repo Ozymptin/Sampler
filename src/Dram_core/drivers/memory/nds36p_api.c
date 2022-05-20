@@ -53,7 +53,8 @@ void nds36p_rw_buffer(uint32_t loc, uint16_t *data, int16_t len, uint8_t rw)
 	}
 
 	do {
-		uint16_t bank, loc_in_bank, row, col, bytes_left_in_row, bytes;
+		uint8_t bank;
+		uint16_t loc_in_bank, row, col, bytes_left_in_row, bytes;
 
 		bank = loc / BANK_SIZE;
 		loc_in_bank = loc - (bank * BANK_SIZE);

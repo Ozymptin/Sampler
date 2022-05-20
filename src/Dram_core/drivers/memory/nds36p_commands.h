@@ -3,28 +3,26 @@
 
 #include <stdint.h>
 
-struct CMD {
-	union {
-		struct {
-			uint8_t cs : 1;
-			uint8_t ras : 1;
-			uint8_t cas : 1;
-			uint8_t we : 1;
-			uint8_t bank : 2;
-		};
-		uint8_t flags;
+struct cmd_pinout {
+	const struct {
+		uint8_t cs : 1;
+		uint8_t ras : 1;
+		uint8_t cas : 1;
+		uint8_t we : 1;
+		uint8_t bank : 2;
 	};
 
-	union {
-		struct {
-			uint16_t address_col : 9; // A0-A8
-			uint8_t anine : 1; // A9
-			uint8_t precharge : 1; // A10
-			uint8_t aeleven : 1; // A11
-			uint8_t atwelve : 1; // A12
-		};
-		uint16_t address;
+	struct {
+		uint16_t address_col : 9; // A0-A8
+		uint8_t anine : 1; // A9
+		uint8_t precharge : 1; // A10
+		uint8_t aeleven : 1; // A11
+		uint8_t atwelve : 1; // A12
 	};
+};
+
+struct CMD {
+	struct cmd_pinout pinout;
 
 	uint8_t is_write : 1;
 	uint8_t is_read : 1;
