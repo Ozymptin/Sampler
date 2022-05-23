@@ -11,9 +11,12 @@
 #define BANK_SIZE (ROWS * COLLUMS)
 #define NUM_OF_BANKS 4
 
+void nds36p_write_buffer(uint32_t loc, uint16_t *data, int16_t len) { nds36p_rw_buffer(loc, data, len, 0); }
+void nds36p_read_buffer(uint32_t loc, uint16_t *data, int16_t len)  { nds36p_rw_buffer(loc, data, len, 1); }
+
 static void nds36p_write_page(uint8_t bank, uint16_t row, uint16_t col, uint16_t *data, uint16_t len)
 {
-	struct CMD cmds[4];
+	struct cmd cmds[4];
 
 	nds36p_struct_create_bank_activate(&cmds[0], bank, row);
 	nds36p_struct_create_write(&cmds[1], bank, col, data, len);
@@ -26,7 +29,7 @@ static void nds36p_write_page(uint8_t bank, uint16_t row, uint16_t col, uint16_t
 
 static void nds36p_read_page(uint8_t bank, uint16_t row, uint16_t col, uint16_t *data, uint16_t len)
 {
-	struct CMD cmds[4];
+	struct cmd cmds[4];
 
 	nds36p_struct_create_bank_activate(&cmds[0], bank, row);
 	nds36p_struct_create_read(&cmds[1], bank, col, data, len);
@@ -39,7 +42,7 @@ static void nds36p_read_page(uint8_t bank, uint16_t row, uint16_t col, uint16_t 
 
 void nds36p_init()
 {
-	struct CMD cmd;
+	struct cmd cmd;
 	nds36p_struct_create_modereg_set(&cmd, 4);
 
 	nds36p_prepare(&cmd, 1);

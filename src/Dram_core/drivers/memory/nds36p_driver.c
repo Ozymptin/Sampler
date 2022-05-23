@@ -1,58 +1,64 @@
+#include <string.h>
 #include <stdint.h>
 
 #include "sam.h"
 
+#include "nds36p_commands.h"
 #include "nds36p_driver.h"
+#include "project_specific.h"
 
 #define SIZEOF_ARRAY(x) (sizeof(x) / sizeof(x[0]))
 
-static struct PINOUT pinout[1+512+2]; // Activate + read 512 words + burst stop + precharge
+static const struct control_pin nop = {
+	.cs = 0,
+	.ras = 1,
+	.cas = 1,
+	.we = 1
+};
+
+static struct pinout pinouts[1+512+2]; // Activate + read 512 words + burst stop + precharge
 static uint16_t pinout_count;
 
-void nds36p_prepare(struct CMD *cmd, uint16_t cmd_count)
+void nds36p_prepare(struct cmd *cmd, uint16_t cmd_count)
 {
-	if (cmd_count < SIZEOF_ARRAY(pinout)) {
-		pinout_count = 0;
-		return;
-	}
-	
-	uint16_t i, j;
-	for (i = 0, j = 0; i < cmd_count; i++) {
-		pinout[i+j].address = cmd[i].address << DRAM_SHIFT_ADDRESS;
-		pinout[i+j].control = cmd[i].flags << DRAM_SHIFT_CONTROL;
-		
-		if (cmd[i].is_write) {
-			pinout[i].data = cmd[i].data[j];
-			for (j = 1; j < cmd[i].len; j++) {
-				pinout[i+j].data = cmd[i].data[j];
-				pinout[i+j].control = 14 << DRAM_SHIFT_CONTROL; // Hard coded NOP operation
+	memset(pinouts, 0, sizeof(pinouts));
+
+	for (uint16_t i = 0, k = 0; i < cmd_count; i++, k++) {
+		map_control_pins(&pinouts[k], cmd[i].control);
+		map_address_pins(&pinouts[k], cmd[i].address);
+
+		if (cmd[i].write) {
+			map_data_pins(&pinouts[k++], cmd[i].data[0]);
+			for (uint16_t j = 1; j < cmd[i].len; j++, k++) {
+				map_control_pins(&pinouts[k], nop);
+				map_data_pins(&pinouts[k], cmd[i].data[j]);
 			}
-		} else if (cmd[i].is_read) {
-			for (j = 1; j < cmd[i].len; j++) {
-				pinout[i+j].control = 14 << DRAM_SHIFT_CONTROL; // Hard coded NOP operation
+			k--;
+		} else if (cmd[i].read) {
+			for (uint16_t j = 1; j < cmd[i].len; j++, k++) {
+				map_control_pins(&pinouts[k], nop);
+				pinouts[k].data = &cmd[i].data[j];
 			}
+			k--;
 		}
 	}
-	pinout_count = i+j;
 }
 
 __attribute__((optimize("O3"))) void nds36p_execute_write()
 {
 	for (uint16_t i = 0; i < pinout_count; i++) {
 		// Set output pins
-		REG_PIOA_SODR = pinout[i].data;
-		REG_PIOB_SODR = pinout[i].address;
-		REG_PIOB_SODR = pinout[i].control;
+		REG_PIOA_SODR = pinouts[i].a.reg;
+		REG_PIOB_SODR = pinouts[i].b.reg;
 
 		while (!(REG_TC0_SR0 & TC_SR_COVFS)); // Wait until the clock period is over
-		REG_PIOA_SODR = DRAM_PIN_CLOCK; // Set clock pin high
+		REG_PIOC_SODR = 23; // Set clock pin high
 		while (!(REG_TC0_SR0 & TC_SR_CPAS)); // Wait until half of the clock period is over
-		REG_PIOA_CODR = DRAM_PIN_CLOCK; // Set clock pin low
+		REG_PIOC_CODR = 23; // Set clock pin low
 
 		// Clear output pins
-		REG_PIOA_CODR = pinout[i].data;
-		REG_PIOB_CODR = pinout[i].address;
-		REG_PIOB_CODR = pinout[i].control;
+		REG_PIOA_CODR = pinouts[i].a.reg;
+		REG_PIOB_CODR = pinouts[i].b.reg;
 	}
 }
 
@@ -60,19 +66,24 @@ __attribute__((optimize("O3"))) void nds36p_execute_read()
 {
 	for (uint16_t i = 0; i < pinout_count; i++) {
 		// Set output pins
-		REG_PIOB_SODR = pinout[i].address;
-		REG_PIOB_SODR = pinout[i].control;
+		REG_PIOA_SODR = pinouts[i].a.reg;
+		REG_PIOB_SODR = pinouts[i].b.reg;
 
 		while (!(REG_TC0_SR0 & TC_SR_COVFS)); // Wait until the clock period is over
-		REG_PIOA_SODR = DRAM_PIN_CLOCK; // Set clock pin high
+		REG_PIOC_SODR = 23; // Set clock pin high
 		while (!(REG_TC0_SR0 & TC_SR_CPAS)); // Wait until half of the clock period is over
-		REG_PIOA_CODR = DRAM_PIN_CLOCK; // Set clock pin low
+		REG_PIOC_CODR = 23; // Set clock pin low
 
-		// Read data pins
-		pinout[i].data = REG_PIOA_PDSR;
-
-		// Clear output pins
-		REG_PIOB_CODR = pinout[i].address;
-		REG_PIOB_CODR = pinout[i].control;
+		if (pinouts[i].data != NULL) {
+			// Read data pins
+			pinouts[i].a.reg = REG_PIOA_PDSR;
+			pinouts[i].b.reg = REG_PIOB_PDSR;
+		} else {
+			// Clear output pins
+			REG_PIOA_CODR = pinouts[i].a.reg;
+			REG_PIOB_CODR = pinouts[i].b.reg;
+		}
 	}
+
+	// unmap_data_pins();
 }
