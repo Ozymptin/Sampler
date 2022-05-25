@@ -117,3 +117,4 @@ __attribute__((optimize("O3"))) void nds36p_execute_read()
 //
 // (1): for loop, set pins, set clock pin high. 5 + 8 + 2 = 15 clock cycles
 // (2): clear data, set clock pin low. 8 + 2 = 10 clock cycles
+//
