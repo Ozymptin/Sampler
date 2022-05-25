@@ -36,6 +36,8 @@ void nds36p_prepare(struct cmd *cmd, uint16_t cmd_count)
 			}
 			k--;
 		} else if (cmd[i].read) {
+			map_control_pins(&pinouts[++k], nop);
+			k++;
 			for (uint16_t j = 1; j < cmd[i].len; j++, k++) {
 				map_control_pins(&pinouts[k], nop);
 				pinouts[k].data = &cmd[i].data[j];
@@ -97,11 +99,11 @@ __attribute__((optimize("O3"))) void nds36p_execute_read()
 
 //
 //  CPU speed is 120 MHz, 8.33 nanoseconds / clock cycle
-//  ~
+//  
 //
-//  <-------------- xxx ns / xx clock cycles -------------->
-//  <--- xxx ns / xx cycles --->
-//                              <--- xxx ns / xx cycles --->
+//  <------------ 208.25 ns / 25 clock cycles ------------->
+//  <-- 124.9 ns / 15 cycles -->
+//                              <---- 83 ns / 10 cycles --->
 //
 //                             /---------------------------\                           /---------------------------\
 //                             |                           |                           |                           |
@@ -113,5 +115,5 @@ __attribute__((optimize("O3"))) void nds36p_execute_read()
 //  ---------------------------/                           \---------------------------/                           \
 //              (1)                         (2)                         (1)                         (2)            
 //
-// (1): 
-// (2): 
+// (1): for loop, set pins, set clock pin high. 5 + 8 + 2 = 15 clock cycles
+// (2): clear data, set clock pin low. 8 + 2 = 10 clock cycles
