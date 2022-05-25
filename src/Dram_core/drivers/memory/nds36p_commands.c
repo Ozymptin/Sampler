@@ -76,14 +76,14 @@ void nds36p_struct_create_bank_activate(struct cmd *cmd, uint8_t bank, uint16_t 
 {
 	cmd->control = bank_activate;
 	cmd->address.address_full = row;
-	cmd->bank = bank;
+	cmd->address.bank = bank;
 }
 
 void nds36p_struct_create_bank_precharge(struct cmd *cmd, uint8_t bank)
 {
 	cmd->control = bank_precharge;
 	cmd->address.precharge = 0;
-	cmd->bank = bank;
+	cmd->address.bank = bank;
 }
 
 void nds36p_struct_create_bank_precharge_all(struct cmd *cmd)
@@ -97,7 +97,7 @@ void nds36p_struct_create_write(struct cmd *cmd, uint8_t bank, uint16_t col, uin
 	cmd->control = write;
 	cmd->address.address_lower = col;
 	cmd->address.precharge = 0;
-	cmd->bank = bank;
+	cmd->address.bank = bank;
 	cmd->write = 1;
 	cmd->data = data;
 	cmd->len = len;
@@ -108,7 +108,7 @@ void nds36p_struct_create_write_precharge(struct cmd *cmd, uint8_t bank, uint16_
 	cmd->control = write_precharge;
 	cmd->address.address_lower = col;
 	cmd->address.precharge = 1;
-	cmd->bank = bank;
+	cmd->address.bank = bank;
 	cmd->write = 1;
 	cmd->data = data;
 	cmd->len = len;
@@ -119,7 +119,7 @@ void nds36p_struct_create_read(struct cmd *cmd, uint8_t bank, uint16_t col, uint
 	cmd->control = read;
 	cmd->address.address_lower = col;
 	cmd->address.precharge = 0;
-	cmd->bank = bank;
+	cmd->address.bank = bank;
 	cmd->read = 1;
 	cmd->data = data;
 	cmd->len = len;
@@ -130,7 +130,7 @@ void nds36p_struct_create_read_precharge(struct cmd *cmd, uint8_t bank, uint16_t
 	cmd->control = read_precharge;
 	cmd->address.address_lower = col;
 	cmd->address.precharge = 1;
-	cmd->bank = bank;
+	cmd->address.bank = bank;
 	cmd->read = 1;
 	cmd->data = data;
 	cmd->len = len;

@@ -10,34 +10,37 @@ struct control_pin {
 	uint8_t we : 1;
 };
 
-union address_pin {
-	struct {
-		union {
-			struct {
-				uint8_t a0 : 1;
-				uint8_t a1 : 1;
-				uint8_t a2 : 1;
-				uint8_t a3 : 1;
-				uint8_t a4 : 1;
-				uint8_t a5 : 1;
-				uint8_t a6 : 1;
-				uint8_t a7 : 1;
-				uint8_t a8 : 1;
+struct address_pin {
+	union {
+		struct {
+			union {
+				struct {
+					uint8_t a0 : 1;
+					uint8_t a1 : 1;
+					uint8_t a2 : 1;
+					uint8_t a3 : 1;
+					uint8_t a4 : 1;
+					uint8_t a5 : 1;
+					uint8_t a6 : 1;
+					uint8_t a7 : 1;
+					uint8_t a8 : 1;
+				};
+				uint16_t address_lower : 9;
 			};
-			uint16_t address_lower : 9;
+			uint8_t a9 : 1;
+			uint8_t precharge : 1; // A10
+			uint16_t a11 : 1; // A11
+			uint16_t a12 : 1; // A12
 		};
-		uint8_t a9 : 1;
-		uint8_t precharge : 1; // A10
-		uint16_t a11 : 1; // A11
-		uint16_t a12 : 1; // A12
+		uint16_t address_full : 13;
 	};
-	uint16_t address_full;
+	uint8_t bank : 2;
 };
+
 
 struct cmd {
 	struct control_pin control;
-	union address_pin address;
-	uint16_t bank : 2;
+	struct address_pin address;
 
 	uint8_t write : 1;
 	uint8_t read : 1;

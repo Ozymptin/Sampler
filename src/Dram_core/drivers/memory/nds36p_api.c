@@ -6,13 +6,10 @@
 
 #define SIZEOF_ARRAY(x) (sizeof(x) / sizeof(x[0]))
 
-#define ROWS 4096
+#define ROWS 8192
 #define COLLUMS 512
 #define BANK_SIZE (ROWS * COLLUMS)
 #define NUM_OF_BANKS 4
-
-void nds36p_write_buffer(uint32_t loc, uint16_t *data, int16_t len) { nds36p_rw_buffer(loc, data, len, 0); }
-void nds36p_read_buffer(uint32_t loc, uint16_t *data, int16_t len)  { nds36p_rw_buffer(loc, data, len, 1); }
 
 static void nds36p_write_page(uint8_t bank, uint16_t row, uint16_t col, uint16_t *data, uint16_t len)
 {
@@ -49,7 +46,7 @@ void nds36p_init()
 	nds36p_execute_write();
 }
 
-void nds36p_rw_buffer(uint32_t loc, uint16_t *data, int16_t len, uint8_t rw)
+static void nds36p_rw_buffer(uint32_t loc, uint16_t *data, int16_t len, uint8_t rw)
 {
 	if ((loc + len) > (NUM_OF_BANKS * BANK_SIZE)) {
 		return;
@@ -77,3 +74,6 @@ void nds36p_rw_buffer(uint32_t loc, uint16_t *data, int16_t len, uint8_t rw)
 		len -= bytes;
 	} while (len > 0);
 }
+
+void nds36p_write_buffer(uint32_t loc, uint16_t *data, int16_t len) { nds36p_rw_buffer(loc, data, len, 0); }
+void nds36p_read_buffer(uint32_t loc, uint16_t *data, int16_t len)  { nds36p_rw_buffer(loc, data, len, 1); }

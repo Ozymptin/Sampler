@@ -16,14 +16,15 @@ static const struct control_pin nop = {
 	.we = 1
 };
 
-static struct pinout pinouts[1+512+2]; // Activate + read 512 words + burst stop + precharge
+static struct pinout pinouts[2+512+2]; // Activate + 1 nop latency + read 512 words + burst stop + precharge
 static uint16_t pinout_count;
 
 void nds36p_prepare(struct cmd *cmd, uint16_t cmd_count)
 {
 	memset(pinouts, 0, sizeof(pinouts));
 
-	for (uint16_t i = 0, k = 0; i < cmd_count; i++, k++) {
+	uint16_t k = 0;
+	for (uint16_t i = 0; i < cmd_count; i++, k++) {
 		map_control_pins(&pinouts[k], cmd[i].control);
 		map_address_pins(&pinouts[k], cmd[i].address);
 
@@ -41,7 +42,8 @@ void nds36p_prepare(struct cmd *cmd, uint16_t cmd_count)
 			}
 			k--;
 		}
-	}
+	}	
+	pinout_count = k;
 }
 
 __attribute__((optimize("O3"))) void nds36p_execute_write()
@@ -51,14 +53,15 @@ __attribute__((optimize("O3"))) void nds36p_execute_write()
 		REG_PIOA_SODR = pinouts[i].a.reg;
 		REG_PIOB_SODR = pinouts[i].b.reg;
 
-		while (!(REG_TC0_SR0 & TC_SR_COVFS)); // Wait until the clock period is over
-		REG_PIOC_SODR = 23; // Set clock pin high
-		while (!(REG_TC0_SR0 & TC_SR_CPAS)); // Wait until half of the clock period is over
-		REG_PIOC_CODR = 23; // Set clock pin low
+		// Set clock pin high
+		REG_PIOC_SODR = 23;
 
 		// Clear output pins
 		REG_PIOA_CODR = pinouts[i].a.reg;
 		REG_PIOB_CODR = pinouts[i].b.reg;
+
+		// Set clock pin low
+		REG_PIOC_CODR = 23;
 	}
 }
 
@@ -69,10 +72,11 @@ __attribute__((optimize("O3"))) void nds36p_execute_read()
 		REG_PIOA_SODR = pinouts[i].a.reg;
 		REG_PIOB_SODR = pinouts[i].b.reg;
 
-		while (!(REG_TC0_SR0 & TC_SR_COVFS)); // Wait until the clock period is over
-		REG_PIOC_SODR = 23; // Set clock pin high
-		while (!(REG_TC0_SR0 & TC_SR_CPAS)); // Wait until half of the clock period is over
-		REG_PIOC_CODR = 23; // Set clock pin low
+		// Set clock pin high
+		REG_PIOC_SODR = 23;
+
+		// Set clock pin low
+		REG_PIOC_CODR = 23;
 
 		if (pinouts[i].data != NULL) {
 			// Read data pins
@@ -87,3 +91,27 @@ __attribute__((optimize("O3"))) void nds36p_execute_read()
 
 	// unmap_data_pins();
 }
+
+
+
+
+//
+//  CPU speed is 120 MHz, 8.33 nanoseconds / clock cycle
+//  
+//
+//  <-------------- xxx ns / xx clock cycles -------------->
+//  <--- xxx ns / xx cycles --->
+//                              <--- xxx ns / xx cycles --->
+//
+//							   /---------------------------\						   /---------------------------\
+//							   |						   |						   |						   |
+//							   |						   |						   |						   |
+//							   |						   |						   |						   |
+//							   |						   |						   |						   |
+//							   |						   |						   |						   |
+//							   |						   |						   |						   |
+//  ---------------------------/						   \---------------------------/						   \
+//              (1)                         (2)                         (1)                         (2)            
+//
+// (1): 
+// (2): 

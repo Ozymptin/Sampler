@@ -74,7 +74,7 @@ struct pinout {
 };
 
 void map_control_pins(struct pinout *pinouts, struct control_pin input);
-void map_address_pins(struct pinout *pinouts, union address_pin input);
+void map_address_pins(struct pinout *pinouts, struct address_pin input);
 void map_data_pins(struct pinout *pinouts, uint16_t input);
 
 #endif
